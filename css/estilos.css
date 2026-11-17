@@ -108,14 +108,7 @@ p,li{text-wrap:pretty}
 .p-accesorios{grid-column:3 / 5;grid-row:3 / 4}
 @media (hover:hover){.pieza img{transition:transform .6s ease}.pieza:hover img{transform:scale(1.04)}}
 
-.cachorros{margin-top:14px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);border-radius:var(--radio);overflow:hidden;background:var(--carbon);color:#D7D0C2;text-decoration:none}
-.cachorros img{width:100%;height:100%;min-height:280px;object-fit:cover}
-.cachorros .tx{padding:36px 40px;align-self:center}
-.cachorros h3{color:#fff;font-size:clamp(28px,2.6vw,36px);margin-bottom:10px}
-.cachorros ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 24px}
-.cachorros li{border:1px solid rgba(230,203,134,.4);color:var(--oro-claro);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:600}
-
-/* nosotros */
+/* sobre Claudio */
 .dos{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center}
 .retrato{border-radius:var(--radio);overflow:hidden;aspect-ratio:4/5}
 .retrato img{width:100%;height:100%;object-fit:cover}
@@ -123,6 +116,12 @@ p,li{text-wrap:pretty}
 .texto-largo p{margin-bottom:16px;color:#46423A;max-width:62ch}
 .cita{font-family:var(--titulo);font-size:clamp(22px,2vw,27px);line-height:1.38;color:var(--carbon);border-left:3px solid var(--oro);padding:2px 0 2px 24px;margin:30px 0 0}
 .cita footer{font-family:var(--cuerpo);font-size:15px;color:var(--oro-texto);font-weight:700;margin-top:12px}
+.sobre-claudio{align-items:start}
+.sobre-claudio .retrato{position:sticky;top:110px}
+.texto-largo .oficio{font-size:17px;font-weight:700;color:var(--oro-texto);margin:-10px 0 22px}
+.compromiso{margin:26px 0 0;padding:22px 26px;background:#fff;border-radius:var(--radio);max-width:62ch}
+.compromiso h3{font-size:22px;margin-bottom:8px;color:var(--carbon)}
+.texto-largo .compromiso p{margin:0}
 
 /* trayectoria */
 .trayectoria{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:start}
@@ -322,7 +321,7 @@ p,li{text-wrap:pretty}
   .mosaico{grid-template-columns:repeat(2,1fr);grid-template-rows:none;grid-auto-rows:240px}
   .p-escuela,.p-guarderia{grid-column:span 2;grid-row:span 1;min-height:300px}
   .p-traslados,.p-spa,.p-asesoria,.p-accesorios{grid-column:span 1;grid-row:span 1}
-  .cachorros{grid-template-columns:1fr}
+  .sobre-claudio .retrato{position:static;aspect-ratio:4/3}
   .familias{grid-template-columns:repeat(2,1fr)}
   .galeria{grid-template-columns:repeat(2,1fr);grid-auto-rows:180px}
   .pasos{grid-template-columns:1fr}
@@ -362,7 +361,7 @@ p,li{text-wrap:pretty}
   .incluye,.formulario .fila{grid-template-columns:1fr}
   .formulario{padding:22px}
   .pie .cols{grid-template-columns:1fr}
-  .cachorros .tx{padding:26px 22px}
+  .compromiso{padding:18px 20px}
   .perros-linea{gap:10px;margin-top:44px}
   .perros-linea img{height:64px}
   .perros-linea img:nth-child(3){height:74px}
