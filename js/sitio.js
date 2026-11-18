@@ -81,10 +81,39 @@ document.querySelectorAll('.linea-tiempo').forEach(sec => {
   }
   lista.addEventListener('scroll', actualizar, { passive: true })
   actualizar()
-  sec.querySelectorAll('[data-desplazar]').forEach(b => b.addEventListener('click', () => {
+  let hastaCuando = 0  // el avance automático espera hasta este momento después de que alguien lo usa
+  const esperar = ms => { hastaCuando = Date.now() + ms }
+  const mover = sentido => {
     const paso = lista.querySelector('.hito').getBoundingClientRect().width + 18
-    lista.scrollBy({ left: paso * Number(b.dataset.desplazar), behavior: reducir ? 'auto' : 'smooth' })
-  }))
+    const max = lista.scrollWidth - lista.clientWidth
+    const comportamiento = reducir ? 'auto' : 'smooth'
+    // en las puntas da la vuelta, así el carrusel nunca se queda quieto
+    if (sentido > 0 && lista.scrollLeft >= max - 4) lista.scrollTo({ left: 0, behavior: comportamiento })
+    else if (sentido < 0 && lista.scrollLeft <= 4) lista.scrollTo({ left: max, behavior: comportamiento })
+    else lista.scrollBy({ left: paso * sentido, behavior: comportamiento })
+  }
+  sec.querySelectorAll('[data-desplazar]').forEach(b => b.addEventListener('click', () => { mover(Number(b.dataset.desplazar)); esperar(9000) }))
+
+  // 19/11 (pedido de José): que se mueva solo. Avanza cada 4 s mientras se ve en pantalla.
+  // Se frena al pasar el mouse, al tocarlo o con el botón de pausa (WCAG 2.2.2). Con "reducir movimiento", quieto.
+  if (reducir) return
+  const pausa = sec.querySelector('[data-pausa-hitos]')
+  let visible = false, encima = false, pausado = false
+  setInterval(() => {
+    if (visible && !encima && !pausado && !document.hidden && Date.now() > hastaCuando) mover(1)
+  }, 4000)
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0.35 }).observe(lista)
+  lista.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') encima = true })
+  lista.addEventListener('pointerleave', () => { encima = false })
+  lista.addEventListener('pointerdown', () => esperar(9000))
+  lista.addEventListener('focusin', () => { encima = true })
+  lista.addEventListener('focusout', () => { encima = false })
+  pausa.hidden = false
+  pausa.addEventListener('click', () => {
+    pausado = !pausado
+    pausa.setAttribute('aria-label', pausado ? 'Reanudar el carrusel' : 'Pausar el carrusel')
+    pausa.querySelector('use').setAttribute('href', pausado ? '#i-play' : '#i-pause')
+  })
 })
 
 // ---- consulta guiada → WhatsApp
