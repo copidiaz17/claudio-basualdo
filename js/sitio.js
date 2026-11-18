@@ -12,7 +12,8 @@ boton?.addEventListener('click', () => {
   boton.querySelector('use').setAttribute('href', abierto ? '#i-x' : '#i-menu')
 })
 
-// ---- portada: tres verbos, tres fotos, una sola vez (≈12 s) y con pausa
+// ---- portada: tres verbos que se encienden de a uno, una sola vez (≈12 s) y con pausa.
+// Desde el 17/11 hay un solo retrato de Claudio: la foto queda fija y solo hace un zoom lento.
 const portada = document.querySelector('.portada[data-secuencia]')
 if (portada && !reducir) {
   const fotos = [...portada.querySelectorAll('.fotos img')]
@@ -23,7 +24,7 @@ if (portada && !reducir) {
   const mostrar = n => {
     portada.dataset.paso = n
     fotos.forEach((img, i) => {
-      const activa = i === n - 1
+      const activa = i === Math.min(n, fotos.length) - 1
       img.classList.toggle('activa', activa)
       if (activa) requestAnimationFrame(() => img.classList.add('zoom'))
       else setTimeout(() => img.classList.remove('zoom'), 1400)

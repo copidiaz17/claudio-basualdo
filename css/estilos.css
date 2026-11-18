@@ -61,9 +61,11 @@ p,li{text-wrap:pretty}
 .portada .fotos img.zoom{transform:scale(1.09)}
 .portada .fotos:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--carbon) 0%,rgba(20,18,14,0) 5%);pointer-events:none}
 .lugar{font-size:16px;color:var(--oro-claro);font-weight:600}
-.verbos{color:#fff;font-size:clamp(52px,6vw,92px);line-height:.96;letter-spacing:-.01em;margin:14px 0 26px}
-@media (max-width:980px){.verbos{font-size:clamp(50px,13vw,92px)}}
-.verbos span{display:block;transition:opacity .8s ease}
+/* 17/11: el primer pantallazo presenta a Claudio (nombre + retrato); los verbos quedan como lema */
+.nombre{color:#fff;font-size:clamp(52px,6.2vw,96px);line-height:.98;letter-spacing:-.01em;margin:14px 0 16px}
+@media (max-width:980px){.nombre{font-size:clamp(46px,12.5vw,92px)}}
+.verbos{font-family:var(--titulo);font-weight:700;color:var(--oro-claro);font-size:clamp(24px,2.3vw,32px);line-height:1.2;margin:0 0 22px}
+.verbos span{transition:opacity .8s ease}
 .portada[data-paso] .verbos span{opacity:.32}
 .portada[data-paso="1"] .verbos span:nth-child(1),
 .portada[data-paso="2"] .verbos span:nth-child(2),
@@ -156,6 +158,10 @@ p,li{text-wrap:pretty}
 .galeria figure{border-radius:12px;overflow:hidden;background:#DCD7CB}
 .galeria img{width:100%;height:100%;object-fit:cover}
 .galeria .alta{grid-row:span 2}
+.alumnos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.alumnos figure{position:relative;aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:#DCD7CB;margin:0}
+.alumnos img{width:100%;height:100%;object-fit:cover}
+.alumnos figcaption{position:absolute;left:10px;bottom:10px;background:rgba(20,18,14,.74);color:#fff;font-size:14px;font-weight:600;padding:5px 11px;border-radius:999px}
 .galeria .ancha{grid-column:span 2}
 
 /* familias */
@@ -324,6 +330,7 @@ p,li{text-wrap:pretty}
   .sobre-claudio .retrato{position:static;aspect-ratio:4/3}
   .familias{grid-template-columns:repeat(2,1fr)}
   .galeria{grid-template-columns:repeat(2,1fr);grid-auto-rows:180px}
+  .alumnos{grid-template-columns:repeat(2,minmax(0,1fr))}
   .pasos{grid-template-columns:1fr}
   .pasos li + li{padding-left:0;border-left:0;border-top:1px solid var(--linea)}
   .otros{grid-template-columns:1fr}
