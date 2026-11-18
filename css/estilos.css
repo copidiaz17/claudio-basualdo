@@ -378,3 +378,136 @@ p,li{text-wrap:pretty}
   .etapa:after,.etapa .tramo{left:21px;top:44px}
   .etapa h3{margin-top:6px}
 }
+
+/* ================= propuestas de portada (18/11) =================
+   Tres demos para que Claudio elija. Las tres lo ponen primero; cambia la estructura y el movimiento.
+   Todo el movimiento es transform/opacity/clip-path, con "reducir movimiento" respetado. */
+.aviso-maqueta a{color:var(--carbon);margin:0 7px;text-underline-offset:3px}
+.aviso-maqueta b{margin:0 7px}
+@font-face{font-family:'Firma';src:url('../fuentes/firma-latin.woff2') format('woff2');font-display:swap}
+@keyframes contar-desde-cero{from{--n:0}to{--n:30}}
+@keyframes acercar{from{opacity:0;transform:scale(1.06)}}
+
+/* 1. Carta de presentación: claro, retrato en arco, firma que se escribe */
+.carta{background:var(--fondo);padding:clamp(40px,6vw,84px) 0 clamp(48px,6vw,90px);overflow:hidden}
+.carta-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(32px,5vw,80px);align-items:center}
+.carta-oficio{font-size:16px;font-weight:700;color:var(--oro-texto)}
+.carta-nombre{font-size:clamp(54px,6.6vw,104px);line-height:.95;letter-spacing:-.015em;margin:14px 0 0}
+.firma{font-family:'Firma',cursive;font-size:clamp(50px,5.4vw,82px);color:var(--oro);line-height:1.15;margin:10px 0 14px 6px;transform:rotate(-4deg);transform-origin:left center}
+.carta-bajada{font-size:clamp(17px,1.4vw,19px);color:#46423A;max-width:56ch}
+.carta-datos{list-style:none;display:flex;flex-wrap:wrap;gap:14px 34px;margin:26px 0 30px;padding:20px 0;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+.carta-datos li{display:flex;flex-direction:column;max-width:17ch}
+.carta-datos b{font-family:var(--titulo);font-size:40px;line-height:1;color:var(--carbon)}
+.carta-datos li > span{font-size:14.5px;color:var(--gris);line-height:1.35;margin-top:6px}
+.arco{position:relative;margin:0;justify-self:center;width:min(100%,500px);aspect-ratio:4/5}
+.arco img{width:100%;height:100%;object-fit:cover;border-radius:999px 999px 18px 18px;position:relative;z-index:1}
+.arco:before{content:'';position:absolute;inset:-14px -14px 14px 14px;border:1.5px solid var(--oro);border-radius:999px 999px 18px 18px}
+@media (prefers-reduced-motion:no-preference){
+  .firma{clip-path:inset(-30% 100% -40% -8%);animation:escribir 2.4s cubic-bezier(.55,.1,.35,1) .5s forwards}
+  .arco img{animation:acercar 1.6s cubic-bezier(.2,.7,.2,1) both}
+  .carta-datos .contador{counter-reset:n var(--n);animation:contar-desde-cero 1.8s ease-out .4s both}
+  .carta-datos .contador .num{display:none}
+  .carta-datos .contador::after{content:counter(n)}
+}
+@keyframes escribir{to{clip-path:inset(-30% -8% -40% -8%)}}
+
+/* 2. Pantalla completa + historia por capítulos */
+.cine{position:relative;min-height:max(540px,calc(100svh - 118px));display:flex;align-items:flex-end;color:#fff;background:var(--carbon);overflow:hidden;isolation:isolate}
+.cine-foto{position:absolute;inset:0;z-index:-1}
+.cine-foto img{width:100%;height:100%;object-fit:cover}
+.cine-foto:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(14,13,10,.94) 0%,rgba(14,13,10,.55) 40%,rgba(14,13,10,.05) 72%),linear-gradient(90deg,rgba(14,13,10,.5),rgba(14,13,10,0) 55%)}
+.cine-texto{width:100%;padding-top:120px;padding-bottom:clamp(40px,7vh,80px)}
+.cine-nombre{color:#fff;font-size:clamp(56px,8.4vw,136px);line-height:.92;letter-spacing:-.02em;margin:12px 0 18px;max-width:11ch}
+.cine .bajada{font-size:clamp(17px,1.5vw,20px);color:#ECE6D8;max-width:58ch;margin-bottom:6px}
+.cine .btn-linea{color:#fff}
+@media (prefers-reduced-motion:no-preference){
+  .cine-foto img{animation:acercar 1.8s cubic-bezier(.2,.7,.2,1) both}
+  @supports (animation-timeline:scroll()){
+    .cine-foto{animation:alejar linear both;animation-timeline:scroll(root);animation-range:0 90vh}
+    .cine-texto{animation:subir linear both;animation-timeline:scroll(root);animation-range:0 75vh}
+  }
+}
+@keyframes alejar{to{transform:scale(1.12);opacity:.4}}
+@keyframes subir{to{transform:translateY(-70px);opacity:0}}
+.historia-grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(32px,5vw,80px);align-items:start}
+.historia-fotos{position:sticky;top:110px;height:min(calc(100svh - 150px),720px);border-radius:var(--radio);overflow:hidden;background:#DCD7CB}
+.historia-fotos figure{position:absolute;inset:0;margin:0;opacity:0;transition:opacity .8s ease}
+.historia-fotos figure.activa{opacity:1}
+.historia-fotos img{width:100%;height:100%;object-fit:cover}
+.puntos{position:absolute;right:16px;top:50%;transform:translateY(-50%);list-style:none;display:flex;flex-direction:column;gap:12px;z-index:2}
+.puntos li{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.6);box-shadow:0 0 0 1px rgba(0,0,0,.15);transition:background .3s,transform .3s}
+.puntos li.activo{background:var(--oro);transform:scale(1.4)}
+.historia-textos article{min-height:72svh;display:flex;flex-direction:column;justify-content:center;padding:40px 0;max-width:56ch}
+.cap-num{font-family:var(--titulo);font-size:20px;color:var(--oro-texto);margin-bottom:10px}
+.historia-textos h2,.historia-textos h3{font-size:clamp(32px,3.4vw,48px);margin-bottom:18px}
+.historia-textos article > p{color:#46423A;font-size:18px}
+.solo-celu{display:none}
+
+/* 3. Revista: retrato vertical, frase al lado y línea de tiempo con la prensa */
+.revista{background:var(--fondo);padding:clamp(28px,4vw,56px) 0 clamp(48px,6vw,88px)}
+.revista-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(32px,5vw,84px);align-items:center}
+.revista-foto{margin:0;position:relative;aspect-ratio:4/5;border-radius:6px;overflow:hidden;background:#DCD7CB}
+.revista-foto img{width:100%;height:100%;object-fit:cover}
+.revista-foto figcaption{position:absolute;left:0;bottom:0;background:var(--carbon);color:var(--oro-claro);font-size:13px;font-weight:700;letter-spacing:.04em;padding:8px 14px}
+.revista-nombre{font-size:clamp(60px,7.4vw,118px);line-height:.9;letter-spacing:-.02em;margin:14px 0 26px}
+.revista-nombre span{display:block}
+.revista-nombre span:last-child{color:var(--oro-texto);padding-left:.55em}
+.revista-cita{font-family:var(--titulo);font-size:clamp(21px,1.9vw,26px);line-height:1.38;color:var(--carbon);margin:0 0 20px;padding-top:22px;border-top:3px solid var(--carbon);max-width:32ch}
+@media (prefers-reduced-motion:no-preference){
+  .revista-nombre span{animation:asomar .9s cubic-bezier(.2,.7,.2,1) both}
+  .revista-nombre span:last-child{animation-delay:.18s}
+  .revista-foto img{animation:acercar 1.6s cubic-bezier(.2,.7,.2,1) both}
+}
+@keyframes asomar{from{opacity:0;transform:translateY(.35em)}}
+.linea-tiempo{overflow:hidden}
+.linea-barra{height:3px;background:rgba(230,203,134,.18);border-radius:3px;margin:0 0 22px;overflow:hidden}
+.linea-barra span{display:block;height:100%;background:var(--oro);transform-origin:left;transform:scaleX(.2);transition:transform .15s linear}
+.hitos{list-style:none;display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  padding:6px max(20px,calc((100vw - 1200px) / 2 + 28px)) 16px;scroll-padding-inline:max(20px,calc((100vw - 1200px) / 2 + 28px))}
+.hitos::-webkit-scrollbar{display:none}
+.hito{flex:0 0 min(340px,80vw);scroll-snap-align:start;background:#1E1B16;border:1px solid rgba(230,203,134,.18);border-radius:var(--radio);padding:22px;display:flex;flex-direction:column;gap:12px;color:#D7D0C2}
+.hito .cuando{font-family:var(--titulo);font-size:34px;color:var(--oro);line-height:1}
+.hito figure{margin:0;aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:#2a261f}
+.hito img{width:100%;height:100%;object-fit:cover}
+.hito .sin-foto{aspect-ratio:16/10;border-radius:10px;background:#F3EEE2;display:grid;place-items:center;text-align:center;padding:0 18px;
+  font-family:var(--titulo);font-style:italic;font-size:clamp(30px,2.6vw,38px);color:var(--carbon);line-height:1.05;border-top:6px double var(--carbon);border-bottom:6px double var(--carbon)}
+.hito h3{color:#fff;font-size:22px}
+.hito p{font-size:16px;line-height:1.5}
+.hito .leer{color:var(--oro-claro);font-weight:700;font-size:15px;margin-top:auto;text-underline-offset:3px}
+.hitos-flechas{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+.hitos-flechas .btn{color:#fff;padding:10px 14px}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .hito{animation:aparecer-hito linear both;animation-timeline:view(inline);animation-range:entry 0% entry 70%}
+  }
+}
+@keyframes aparecer-hito{from{opacity:.3;transform:scale(.94)}}
+
+/* página para comparar */
+.props{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.prop{display:flex;flex-direction:column;background:#fff;border:1px solid var(--linea);border-radius:var(--radio);overflow:hidden;text-decoration:none;color:var(--texto)}
+.prop-capturas{position:relative;display:block;aspect-ratio:16/10;background:var(--carbon);overflow:hidden}
+.prop-capturas img{width:100%;height:100%;object-fit:cover;object-position:top}
+.prop-capturas .celu{position:absolute;right:12px;bottom:12px;width:24%;height:auto;aspect-ratio:390/844;border:3px solid var(--carbon);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.prop-tx{display:flex;flex-direction:column;gap:8px;padding:20px 22px 24px}
+.prop-tx small{color:var(--oro-texto);font-weight:700;font-size:14px}
+.prop-tx b{font-family:var(--titulo);font-size:26px;color:var(--carbon);line-height:1.1}
+.prop-tx > span{color:#46423A;font-size:15.5px}
+.prop-tx .btn{align-self:flex-start;margin-top:8px;color:var(--carbon)}
+
+@media (max-width:980px){
+  .carta-grid,.revista-grid,.historia-grid{grid-template-columns:minmax(0,1fr)}
+  .arco{order:-1;width:min(76%,360px);margin-top:16px}
+  .revista-foto{aspect-ratio:1/1}
+  .historia-fotos{display:none}
+  .solo-celu{display:block;margin:0 0 18px;aspect-ratio:4/3;border-radius:var(--radio);overflow:hidden;background:#DCD7CB}
+  .solo-celu img{width:100%;height:100%;object-fit:cover}
+  .historia-textos article{min-height:0;padding:22px 0}
+  .cine{min-height:max(520px,calc(100svh - 140px))}
+  .props{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .carta-datos{gap:14px 22px}
+  .carta-datos b{font-size:32px}
+  .revista-nombre span:last-child{padding-left:.3em}
+}

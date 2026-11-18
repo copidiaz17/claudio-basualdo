@@ -56,6 +56,37 @@ if (portada && !reducir) {
   pausa.addEventListener('click', terminar)
 }
 
+// ---- propuesta 2: la historia por capítulos (la foto fija cambia con el capítulo que se está leyendo)
+document.querySelectorAll('[data-capitulos]').forEach(sec => {
+  const figs = sec.querySelectorAll('.historia-fotos figure')
+  const puntos = sec.querySelectorAll('.puntos li')
+  const obs = new IntersectionObserver(entradas => {
+    entradas.forEach(e => {
+      if (!e.isIntersecting) return
+      const n = e.target.dataset.n
+      figs.forEach(f => f.classList.toggle('activa', f.dataset.n === n))
+      puntos.forEach(p => p.classList.toggle('activo', p.dataset.n === n))
+    })
+  }, { rootMargin: '-45% 0px -45% 0px' })
+  sec.querySelectorAll('.historia-textos article').forEach(a => obs.observe(a))
+})
+
+// ---- propuesta 3: línea de tiempo (flechas y barra de avance)
+document.querySelectorAll('.linea-tiempo').forEach(sec => {
+  const lista = sec.querySelector('.hitos')
+  const barra = sec.querySelector('.linea-barra span')
+  const actualizar = () => {
+    const max = lista.scrollWidth - lista.clientWidth
+    barra.style.transform = `scaleX(${max > 0 ? 0.15 + 0.85 * lista.scrollLeft / max : 1})`
+  }
+  lista.addEventListener('scroll', actualizar, { passive: true })
+  actualizar()
+  sec.querySelectorAll('[data-desplazar]').forEach(b => b.addEventListener('click', () => {
+    const paso = lista.querySelector('.hito').getBoundingClientRect().width + 18
+    lista.scrollBy({ left: paso * Number(b.dataset.desplazar), behavior: reducir ? 'auto' : 'smooth' })
+  }))
+})
+
 // ---- consulta guiada → WhatsApp
 document.querySelectorAll('form.formulario').forEach(form => {
   form.addEventListener('submit', e => {
