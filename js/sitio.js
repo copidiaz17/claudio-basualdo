@@ -92,22 +92,24 @@ document.querySelectorAll('.linea-tiempo').forEach(sec => {
     else if (sentido < 0 && lista.scrollLeft <= 4) lista.scrollTo({ left: max, behavior: comportamiento })
     else lista.scrollBy({ left: paso * sentido, behavior: comportamiento })
   }
-  sec.querySelectorAll('[data-desplazar]').forEach(b => b.addEventListener('click', () => { mover(Number(b.dataset.desplazar)); esperar(9000) }))
+  sec.querySelectorAll('[data-desplazar]').forEach(b => b.addEventListener('click', () => { mover(Number(b.dataset.desplazar)); esperar(8000) }))
 
   // 19/11 (pedido de José): que se mueva solo. Avanza cada 4 s mientras se ve en pantalla.
-  // Se frena al pasar el mouse, al tocarlo o con el botón de pausa (WCAG 2.2.2). Con "reducir movimiento", quieto.
+  // NO se frena por tener el mouse encima (al bajar con la ruedita el puntero cae justo ahí y parecía trabado).
+  // Se frena unos segundos solo si alguien lo usa: lo toca, lo arrastra, lo desliza o enfoca un enlace.
+  // Botón de pausa para frenarlo del todo (WCAG 2.2.2). Con "reducir movimiento", quieto.
   if (reducir) return
   const pausa = sec.querySelector('[data-pausa-hitos]')
-  let visible = false, encima = false, pausado = false
+  let visible = false, pausado = false, solo = 0
   setInterval(() => {
-    if (visible && !encima && !pausado && !document.hidden && Date.now() > hastaCuando) mover(1)
+    if (!visible || pausado || document.hidden || Date.now() < hastaCuando) return
+    solo = Date.now() + 1200  // el desplazamiento que sigue lo hace el carrusel, no la persona
+    mover(1)
   }, 4000)
   new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0.35 }).observe(lista)
-  lista.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') encima = true })
-  lista.addEventListener('pointerleave', () => { encima = false })
-  lista.addEventListener('pointerdown', () => esperar(9000))
-  lista.addEventListener('focusin', () => { encima = true })
-  lista.addEventListener('focusout', () => { encima = false })
+  lista.addEventListener('pointerdown', () => esperar(8000))
+  lista.addEventListener('scroll', () => { if (Date.now() > solo) esperar(8000) }, { passive: true })
+  lista.addEventListener('focusin', () => esperar(8000))
   pausa.hidden = false
   pausa.addEventListener('click', () => {
     pausado = !pausado
