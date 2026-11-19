@@ -119,11 +119,9 @@ p,li{text-wrap:pretty}
 .cita{font-family:var(--titulo);font-size:clamp(22px,2vw,27px);line-height:1.38;color:var(--carbon);border-left:3px solid var(--oro);padding:2px 0 2px 24px;margin:30px 0 0}
 .cita footer{font-family:var(--cuerpo);font-size:15px;color:var(--oro-texto);font-weight:700;margin-top:12px}
 .sobre-claudio{align-items:start}
-/* 19/11: dos fotos que eligió Claudio, una grande y otra chica encima */
+/* 19/11: la foto del labrador que eligió Claudio (la otra pasó a la portada) */
 .retratos{position:relative}
-.sobre-claudio .retratos{position:sticky;top:110px;padding-bottom:56px}
-.retrato-chico{position:absolute;right:-22px;bottom:0;width:46%;aspect-ratio:4/5;margin:0;border-radius:var(--radio);overflow:hidden;border:6px solid var(--monte-claro);box-shadow:0 14px 30px rgba(20,18,14,.18);background:#DCD7CB}
-.retrato-chico img{width:100%;height:100%;object-fit:cover}
+.sobre-claudio .retratos{position:sticky;top:110px}
 .texto-largo .oficio{font-size:17px;font-weight:700;color:var(--oro-texto);margin:-10px 0 22px}
 .compromiso{margin:26px 0 0;padding:22px 26px;background:#fff;border-radius:var(--radio);max-width:62ch}
 .compromiso h3{font-size:22px;margin-bottom:8px;color:var(--carbon)}
@@ -331,9 +329,8 @@ p,li{text-wrap:pretty}
   .mosaico{grid-template-columns:repeat(2,1fr);grid-template-rows:none;grid-auto-rows:240px}
   .p-escuela,.p-guarderia{grid-column:span 2;grid-row:span 1;min-height:300px}
   .p-traslados,.p-spa,.p-asesoria,.p-accesorios{grid-column:span 1;grid-row:span 1}
-  .sobre-claudio .retratos{position:relative;top:auto;padding-bottom:44px}
+  .sobre-claudio .retratos{position:relative;top:auto}
   .sobre-claudio .retrato{aspect-ratio:4/3.4}
-  .retrato-chico{right:0;width:40%}
   .familias{grid-template-columns:repeat(2,1fr)}
   .galeria{grid-template-columns:repeat(2,1fr);grid-auto-rows:180px}
   .alumnos{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -406,8 +403,8 @@ p,li{text-wrap:pretty}
 .carta-datos b{font-family:var(--titulo);font-size:40px;line-height:1;color:var(--carbon)}
 .carta-datos li > span{font-size:14.5px;color:var(--gris);line-height:1.35;margin-top:6px}
 .arco{position:relative;margin:0;justify-self:center;width:min(100%,500px);aspect-ratio:4/5}
-.arco img{width:100%;height:100%;object-fit:cover;border-radius:999px 999px 18px 18px;position:relative;z-index:1}
-.arco:before{content:'';position:absolute;inset:-14px -14px 14px 14px;border:1.5px solid var(--oro);border-radius:999px 999px 18px 18px}
+.arco img{width:100%;height:100%;object-fit:cover;border-radius:50% 50% 18px 18px / 32% 32% 18px 18px;position:relative;z-index:1}
+.arco:before{content:'';position:absolute;inset:-14px -14px 14px 14px;border:1.5px solid var(--oro);border-radius:50% 50% 18px 18px / 32% 32% 18px 18px}
 @media (prefers-reduced-motion:no-preference){
   .firma{clip-path:inset(-30% 100% -40% -8%);animation:escribir 2.4s cubic-bezier(.55,.1,.35,1) .5s forwards}
   .arco img{animation:acercar 1.6s cubic-bezier(.2,.7,.2,1) both}
@@ -421,6 +418,13 @@ p,li{text-wrap:pretty}
 .cine{position:relative;min-height:max(540px,calc(100svh - 118px));display:flex;align-items:flex-end;color:#fff;background:var(--carbon);overflow:hidden;isolation:isolate}
 .cine-foto{position:absolute;inset:0;z-index:-1}
 .cine-foto img{width:100%;height:100%;object-fit:cover}
+/* 19/11: la foto de la portada es casi cuadrada. En compu va nítida a la derecha y el resto
+   de la pantalla se llena con la misma foto desenfocada; en el celular la ocupa toda. */
+.cine-foto .fondo{display:none}
+@media (min-width:981px){
+  .cine-foto .fondo{display:block;position:absolute;inset:-60px;width:calc(100% + 120px);height:calc(100% + 120px);filter:blur(36px) saturate(1.1) brightness(.5)}
+  .cine-foto .nitida{position:absolute;top:0;right:0;width:62%;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}
+}
 .cine-foto:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(14,13,10,.94) 0%,rgba(14,13,10,.55) 40%,rgba(14,13,10,.05) 72%),linear-gradient(90deg,rgba(14,13,10,.5),rgba(14,13,10,0) 55%)}
 .cine-texto{width:100%;padding-top:120px;padding-bottom:clamp(40px,7vh,80px)}
 .cine-nombre{color:#fff;font-size:clamp(56px,8.4vw,136px);line-height:.92;letter-spacing:-.02em;margin:12px 0 18px;max-width:11ch}
