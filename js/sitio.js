@@ -71,49 +71,37 @@ document.querySelectorAll('[data-capitulos]').forEach(sec => {
   sec.querySelectorAll('.historia-textos article').forEach(a => obs.observe(a))
 })
 
-// ---- propuesta 3: línea de tiempo (flechas y barra de avance)
-document.querySelectorAll('.linea-tiempo').forEach(sec => {
-  const lista = sec.querySelector('.hitos')
-  const barra = sec.querySelector('.linea-barra span')
-  const actualizar = () => {
-    const max = lista.scrollWidth - lista.clientWidth
-    barra.style.transform = `scaleX(${max > 0 ? 0.15 + 0.85 * lista.scrollLeft / max : 1})`
-  }
-  lista.addEventListener('scroll', actualizar, { passive: true })
-  actualizar()
-  let hastaCuando = 0  // el avance automático espera hasta este momento después de que alguien lo usa
-  const esperar = ms => { hastaCuando = Date.now() + ms }
-  const mover = sentido => {
-    const paso = lista.querySelector('.hito').getBoundingClientRect().width + 18
-    const max = lista.scrollWidth - lista.clientWidth
-    const comportamiento = reducir ? 'auto' : 'smooth'
-    // en las puntas da la vuelta, así el carrusel nunca se queda quieto
-    if (sentido > 0 && lista.scrollLeft >= max - 4) lista.scrollTo({ left: 0, behavior: comportamiento })
-    else if (sentido < 0 && lista.scrollLeft <= 4) lista.scrollTo({ left: max, behavior: comportamiento })
-    else lista.scrollBy({ left: paso * sentido, behavior: comportamiento })
-  }
-  sec.querySelectorAll('[data-desplazar]').forEach(b => b.addEventListener('click', () => { mover(Number(b.dataset.desplazar)); esperar(8000) }))
-
-  // 19/11 (pedido de José): que se mueva solo. Avanza cada 4 s mientras se ve en pantalla.
-  // NO se frena por tener el mouse encima (al bajar con la ruedita el puntero cae justo ahí y parecía trabado).
-  // Se frena unos segundos solo si alguien lo usa: lo toca, lo arrastra, lo desliza o enfoca un enlace.
-  // Botón de pausa para frenarlo del todo (WCAG 2.2.2). Con "reducir movimiento", quieto.
-  if (reducir) return
+// ---- propuesta 3: línea de tiempo como cinta continua (19/11, José: "suave y continuo en loop")
+// El movimiento lo hace el CSS (animación "desfile", sin cortes). Acá solo:
+// - mantener apretada una tarjeta la frena mientras se sostiene;
+// - el botón de pausa la frena del todo (WCAG 2.2.2);
+// - fuera de pantalla se frena para no gastar batería;
+// - con "reducir movimiento" la cinta queda quieta y se usan las flechas.
+document.querySelectorAll('[data-carrusel]').forEach(cinta => {
+  const sec = cinta.closest('section')
   const pausa = sec.querySelector('[data-pausa-hitos]')
-  let visible = false, pausado = false, solo = 0
-  setInterval(() => {
-    if (!visible || pausado || document.hidden || Date.now() < hastaCuando) return
-    solo = Date.now() + 1200  // el desplazamiento que sigue lo hace el carrusel, no la persona
-    mover(1)
-  }, 4000)
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0.35 }).observe(lista)
-  lista.addEventListener('pointerdown', () => esperar(8000))
-  lista.addEventListener('scroll', () => { if (Date.now() > solo) esperar(8000) }, { passive: true })
-  lista.addEventListener('focusin', () => esperar(8000))
+  const flechas = sec.querySelectorAll('[data-desplazar]')
+  if (reducir) {
+    flechas.forEach(b => {
+      b.hidden = false
+      b.addEventListener('click', () => {
+        const paso = cinta.querySelector('.hito').getBoundingClientRect().width + 18
+        cinta.scrollBy({ left: paso * Number(b.dataset.desplazar) })
+      })
+    })
+    return
+  }
+  let pausado = false
+  const frenar = si => cinta.classList.toggle('pausado', si)
+  cinta.addEventListener('pointerdown', () => frenar(true))
+  ;['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => cinta.addEventListener(ev, () => frenar(pausado)))
+  cinta.addEventListener('contextmenu', e => { if (e.pointerType === 'touch' || e.pointerType === 'pen') e.preventDefault() })  // mantener apretado en el celu no abre el menú
+  new IntersectionObserver(([e]) => cinta.classList.toggle('fuera', !e.isIntersecting)).observe(cinta)
   pausa.hidden = false
   pausa.addEventListener('click', () => {
     pausado = !pausado
-    pausa.setAttribute('aria-label', pausado ? 'Reanudar el carrusel' : 'Pausar el carrusel')
+    frenar(pausado)
+    pausa.setAttribute('aria-label', pausado ? 'Seguir la línea de tiempo' : 'Pausar la línea de tiempo')
     pausa.querySelector('use').setAttribute('href', pausado ? '#i-play' : '#i-pause')
   })
 })

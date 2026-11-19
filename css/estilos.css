@@ -17,6 +17,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:90px;-webkit-text-size-adjust:100%;interpolate-size:allow-keywords}
+[hidden]{display:none !important}  /* que ".btn{display:...}" no muestre botones ocultos */
 body{font-family:var(--cuerpo);color:var(--texto);background:var(--fondo);line-height:1.6;font-size:17px;font-variant-numeric:lining-nums;-webkit-tap-highlight-color:transparent}
 img{max-width:100%;display:block}
 a{color:inherit}
@@ -474,12 +475,15 @@ p,li{text-wrap:pretty}
 }
 @keyframes asomar{from{opacity:0;transform:translateY(.35em)}}
 .linea-tiempo{overflow:hidden}
-.linea-barra{height:3px;background:rgba(230,203,134,.18);border-radius:3px;margin:0 0 22px;overflow:hidden}
-.linea-barra span{display:block;height:100%;background:var(--oro);transform-origin:left;transform:scaleX(.2);transition:transform .15s linear}
-.hitos{list-style:none;display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
-  padding:6px max(20px,calc((100vw - 1200px) / 2 + 28px)) 16px;scroll-padding-inline:max(20px,calc((100vw - 1200px) / 2 + 28px))}
-.hitos::-webkit-scrollbar{display:none}
-.hito{flex:0 0 min(340px,80vw);scroll-snap-align:start;background:#1E1B16;border:1px solid rgba(230,203,134,.18);border-radius:var(--radio);padding:22px;display:flex;flex-direction:column;gap:12px;color:#D7D0C2}
+/* 19/11: cinta que corre suave y sin parar. Las tarjetas van dos veces; la pista se corre media (= una tanda)
+   y vuelve a empezar sin salto. Solo transform: lo mueve la placa de video, sin trabar la página. */
+.hitos{overflow:hidden;padding:6px 0 16px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%)}
+.hitos-pista{list-style:none;display:flex;width:max-content;margin:0;padding:0;animation:desfile 64s linear infinite;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.hitos.pausado .hitos-pista,.hitos.fuera .hitos-pista{animation-play-state:paused}
+@keyframes desfile{to{transform:translateX(-50%)}}
+.hito{flex:0 0 min(340px,80vw);margin-right:18px;background:#1E1B16;border:1px solid rgba(230,203,134,.18);border-radius:var(--radio);padding:22px;display:flex;flex-direction:column;gap:12px;color:#D7D0C2}
 .hito .cuando{font-family:var(--titulo);font-size:34px;color:var(--oro);line-height:1}
 .hito figure{margin:0;aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:#2a261f}
 .hito img{width:100%;height:100%;object-fit:cover}
@@ -490,12 +494,15 @@ p,li{text-wrap:pretty}
 .hito .leer{color:var(--oro-claro);font-weight:700;font-size:15px;margin-top:auto;text-underline-offset:3px}
 .hitos-flechas{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
 .hitos-flechas .btn{color:#fff;padding:10px 14px}
-@supports (animation-timeline:view()){
-  @media (prefers-reduced-motion:no-preference){
-    .hito{animation:aparecer-hito linear both;animation-timeline:view(inline);animation-range:entry 0% entry 70%}
-  }
+/* con "reducir movimiento": quieta, una sola tanda, se desliza a mano o con las flechas */
+@media (prefers-reduced-motion:reduce){
+  .hitos{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-mask-image:none;mask-image:none;
+    padding-inline:max(20px,calc((100vw - 1200px) / 2 + 28px));scroll-padding-inline:max(20px,calc((100vw - 1200px) / 2 + 28px))}
+  .hitos::-webkit-scrollbar{display:none}
+  .hitos-pista{animation:none}
+  .hito{scroll-snap-align:start}
+  .hito.copia{display:none}
 }
-@keyframes aparecer-hito{from{opacity:.3;transform:scale(.94)}}
 
 /* página para comparar */
 .props{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
