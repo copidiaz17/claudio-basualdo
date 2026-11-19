@@ -1,6 +1,6 @@
-// Menú del celular, secuencia de la portada, consulta guiada → WhatsApp, compartir y año del pie.
+// Menú del celular, historia de Claudio por capítulos, consulta guiada → WhatsApp, compartir y año del pie.
+// El movimiento de la portada (la foto que se aleja al bajar) es solo CSS.
 const WHATSAPP = '5493855854222'
-const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // ---- menú del celular
 const boton = document.querySelector('.hamburguesa')
@@ -12,51 +12,7 @@ boton?.addEventListener('click', () => {
   boton.querySelector('use').setAttribute('href', abierto ? '#i-x' : '#i-menu')
 })
 
-// ---- portada: tres verbos que se encienden de a uno, una sola vez (≈12 s) y con pausa.
-// Desde el 17/11 hay un solo retrato de Claudio: la foto queda fija y solo hace un zoom lento.
-const portada = document.querySelector('.portada[data-secuencia]')
-if (portada && !reducir) {
-  const fotos = [...portada.querySelectorAll('.fotos img')]
-  const pausa = portada.querySelector('.pausa')
-  let paso = 0
-  let reloj = null
-
-  const mostrar = n => {
-    portada.dataset.paso = n
-    fotos.forEach((img, i) => {
-      const activa = i === Math.min(n, fotos.length) - 1
-      img.classList.toggle('activa', activa)
-      if (activa) requestAnimationFrame(() => img.classList.add('zoom'))
-      else setTimeout(() => img.classList.remove('zoom'), 1400)
-    })
-  }
-  const terminar = () => {
-    clearInterval(reloj)
-    delete portada.dataset.paso
-    fotos.forEach((img, i) => img.classList.toggle('activa', i === 0))
-    pausa.hidden = true
-  }
-  const avanzar = () => {
-    paso += 1
-    if (paso > fotos.length) return terminar()
-    mostrar(paso)
-  }
-
-  // las fotos 2 y 3 se piden recién cuando la primera ya se ve
-  const arrancar = () => {
-    fotos.slice(1).forEach(img => {
-      if (img.dataset.srcset) { img.srcset = img.dataset.srcset; img.src = img.dataset.src }
-    })
-    pausa.hidden = false
-    avanzar()
-    reloj = setInterval(avanzar, 4000)
-  }
-  if (fotos[0].complete) arrancar()
-  else fotos[0].addEventListener('load', arrancar, { once: true })
-  pausa.addEventListener('click', terminar)
-}
-
-// ---- propuesta 2: la historia por capítulos (la foto fija cambia con el capítulo que se está leyendo)
+// ---- la historia de Claudio por capítulos (la foto fija cambia con el capítulo que se está leyendo)
 document.querySelectorAll('[data-capitulos]').forEach(sec => {
   const figs = sec.querySelectorAll('.historia-fotos figure')
   const puntos = sec.querySelectorAll('.puntos li')
@@ -69,41 +25,6 @@ document.querySelectorAll('[data-capitulos]').forEach(sec => {
     })
   }, { rootMargin: '-45% 0px -45% 0px' })
   sec.querySelectorAll('.historia-textos article').forEach(a => obs.observe(a))
-})
-
-// ---- propuesta 3: línea de tiempo como cinta continua (19/11, José: "suave y continuo en loop")
-// El movimiento lo hace el CSS (animación "desfile", sin cortes). Acá solo:
-// - mantener apretada una tarjeta la frena mientras se sostiene;
-// - el botón de pausa la frena del todo (WCAG 2.2.2);
-// - fuera de pantalla se frena para no gastar batería;
-// - con "reducir movimiento" la cinta queda quieta y se usan las flechas.
-document.querySelectorAll('[data-carrusel]').forEach(cinta => {
-  const sec = cinta.closest('section')
-  const pausa = sec.querySelector('[data-pausa-hitos]')
-  const flechas = sec.querySelectorAll('[data-desplazar]')
-  if (reducir) {
-    flechas.forEach(b => {
-      b.hidden = false
-      b.addEventListener('click', () => {
-        const paso = cinta.querySelector('.hito').getBoundingClientRect().width + 18
-        cinta.scrollBy({ left: paso * Number(b.dataset.desplazar) })
-      })
-    })
-    return
-  }
-  let pausado = false
-  const frenar = si => cinta.classList.toggle('pausado', si)
-  cinta.addEventListener('pointerdown', () => frenar(true))
-  ;['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => cinta.addEventListener(ev, () => frenar(pausado)))
-  cinta.addEventListener('contextmenu', e => { if (e.pointerType === 'touch' || e.pointerType === 'pen') e.preventDefault() })  // mantener apretado en el celu no abre el menú
-  new IntersectionObserver(([e]) => cinta.classList.toggle('fuera', !e.isIntersecting)).observe(cinta)
-  pausa.hidden = false
-  pausa.addEventListener('click', () => {
-    pausado = !pausado
-    frenar(pausado)
-    pausa.setAttribute('aria-label', pausado ? 'Seguir la línea de tiempo' : 'Pausar la línea de tiempo')
-    pausa.querySelector('use').setAttribute('href', pausado ? '#i-play' : '#i-pause')
-  })
 })
 
 // ---- consulta guiada → WhatsApp
